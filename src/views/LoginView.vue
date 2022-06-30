@@ -5,14 +5,16 @@ import config from "../config";
 import LoginSuccessRequestModal from "./LoginSuccessRequestModal.vue";
 import LoginSuccessSelectKeyModal from "./LoginSuccessSelectKeyModal.vue";
 
-const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then(FingerprintJS => FingerprintJS.load())
+// @ts-ignore
+import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 const fingerprint = ref("")
 const login = ref("")
 const approvedBy = ref("")
 const response = ref<String|null>(null)
 
-fpPromise
+FingerprintJS
+    .load()
     .then(fp => fp.get())
     .then(result => {
       const visitorId = result.visitorId
@@ -48,7 +50,7 @@ function getAccess() {
 
 <template>
   <login-success-select-key-modal :list="response" v-if="Array.isArray(response)"/>
-  <login-success-request-modal :text="response" v-else-if="response" :onClose="() => {response = null}" />
+  <login-success-request-modal :text="response.toString()" v-else-if="response" :onClose="() => {response = null}" />
 
   <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
